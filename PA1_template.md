@@ -7,9 +7,17 @@ output:
 
 
 ## Loading and preprocessing the data
-```{r}
+
+```r
 # language setting
 Sys.setlocale("LC_TIME", "en_US.UTF-8")
+```
+
+```
+## [1] "en_US.UTF-8"
+```
+
+```r
 library(lubridate)
 library(ggplot2)
 library(knitr)
@@ -25,35 +33,46 @@ raw.data$fullTime <- strptime(temp, "%Y-%m-%d %H:%M")
 ```
 ## What is mean total number of steps taken per day?
 NA can be ignored in this part
-```{r question 1, echo=TRUE}
+
+```r
 NAomit.data <- na.omit(raw.data)
 # calculate total number of steps each day
 steps.each.day <- tapply(NAomit.data$steps,NAomit.data$date, sum)
 ```
 draw the histogram here
-```{r histrogram, echo=TRUE}
+
+```r
 hist(steps.each.day, xlab = " total number of steps taken each day", main = "Histogram of total number of steps taken each day", breaks=20)
 ```
 
+![plot of chunk histrogram](figure/histrogram-1.png) 
+
 calculate the mean total number of steps taken per day
-```{r mean, echo=TRUE, results='asis'}
+
+```r
 # calculate mean
 mean.steps <- mean(steps.each.day)
 print(mean.steps)
 ```
 
+[1] 10766.19
+
 calculate the mean total number of steps taken per day
-```{r median, echo=TRUE, results='asis'}
+
+```r
 # calculate median
 median.steps <- median(steps.each.day)
 print(median.steps)
 ```
 
+[1] 10765
+
 ## What is the average daily activity pattern?
 * Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
 
-```{r, echo=TRUE, results='asis'}
+
+```r
 # calculate the average number of steps taken, averaged across all days
 average.daily.patten <- tapply(NAomit.data$steps,NAomit.data$time, mean)
 # extract the labels indicating time
@@ -68,17 +87,25 @@ plot(x = xlabs,
      main = "the average daily activity pattern",
      xlab = "time",
      ylab = "Numbers of Steps")
-
 ```
+
+![plot of chunk unnamed-chunk-2](figure/unnamed-chunk-2-1.png) 
 
 * Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
-```{r, echo=TRUE, results='asis'}
 
+```r
 max(average.daily.patten)
-which.max(average.daily.patten)
-
 ```
+
+[1] 206.1698
+
+```r
+which.max(average.daily.patten)
+```
+
+08:35 
+  104 
 
 * the 8:35 interval contains the maximum number of steps, which is 206.1698 steps on average
 
@@ -86,10 +113,13 @@ which.max(average.daily.patten)
 
 1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
 
-```{r, echo=TRUE, results='asis'}
+
+```r
 total.na.number <- sum(is.na(raw.data))
 total.na.number
 ```
+
+[1] 2304
 
 * the total number of missing values is 2304
 
@@ -99,7 +129,8 @@ total.na.number
 
 * replace NAs with the mean for that interval across all days and create the new dataset
 
-```{r, echo=TRUE, results='asis'}
+
+```r
 # replace NAs with the mean for that interval across all days
 # create new dataset for filling NAs
 NAfilled.data <- raw.data
@@ -113,27 +144,40 @@ for (i in 1: nrow(NAfilled.data)){
                 }
         }
 }
-
 ```
 
 4. Make a histogram of the total number of steps taken each day and Calculate and report the mean and median total number of steps taken per day. Do these values differ from the estimates from the first part of the assignment? What is the impact of imputing missing data on the estimates of the total daily number of steps?
 
-```{r, echo=TRUE, results='asis'}
+
+```r
 # calculate total number of steps each day
 steps.each.day2 <- tapply(NAfilled.data$steps,NAfilled.data$date, sum)
 hist(steps.each.day2, xlab = " total number of steps taken each day", main = "Histogram of total number of steps taken each day with new data", breaks=20)
+```
+
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
+
+```r
 # calculate mean and median
 mean.steps2 <- mean(steps.each.day2)
 median.steps2 <- median(steps.each.day2)
 mean.steps2
+```
+
+[1] 10766.19
+
+```r
 median.steps2
 ```
+
+[1] 10766.19
 
 The mean and the median are both 10766.19 now. After filling the NAs, the pattern of the histograms becomes more concertrating toward the center.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
-```{r, echo=TRUE, results='asis'}
+
+```r
 #create new varibles in the dataset with filled NAs
 weekdays1 <- c('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday')
 NAfilled.data$week.day <- 
@@ -156,7 +200,8 @@ par(mfrow=c(2,1))
 plot(x=xlabs, y=weekday.patten,type = "l", main = "weekdays", xlab = "time", ylab = "steps",ylim=c(0,250))
 
 plot(x=xlabs, y=weekend.patten,type = "l", main = "weekend", xlab = "time", ylab = "steps",ylim=c(0,250))
-
 ```
+
+![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 
 
 * the patterns are different, the anonymous had more activites in the afternoon in the weekend compared to the weekdays
